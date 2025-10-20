@@ -1,13 +1,17 @@
 from fastapi import FastAPI 
 from pydantic import BaseModel
-from src.repositories.alpha_vantage import intraday
+import src.repositories.alpha_vantage as stock_repository
 
 app = FastAPI()
 
-class ETF(BaseModel):
-    isin: str
-    name: str
+@app.get('/search')
+def search(q: str):
+    return stock_repository.search(q)
 
-@app.get('/track/{symbol}')
+@app.get('/intraday')
 def track(symbol: str):
-    return intraday(symbol)
+    return stock_repository.intraday(symbol)
+
+@app.get('/quote')
+def quote(symbol: str):
+    return stock_repository.quote(symbol)
